@@ -29,6 +29,7 @@ Certifique-se de ter as seguintes ferramentas instaladas no seu ambiente:
    ```bash
    git clone https://github.com/barbara-sz/BigQuery.git
    cd seu-repositorio
+2. Executar arquivo main.py após instalação dos módulos necessários.
 
 ## Observações
 - Atente-se para alterar os caminhos locais de acordo com a organização do seu computador.
