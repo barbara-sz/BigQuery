@@ -1,0 +1,28 @@
+-- cria tabela icf_trusted
+CREATE TABLE b_szortika.icf_trusted AS
+SELECT DISTINCT *
+FROM b_szortika.icf_raw
+
+-- cria tabela icc_trusted
+CREATE TABLE b_szortika.icc_trusted AS
+SELECT DISTINCT *
+FROM b_szortika.icc_raw
+
+-- cria tabela refined com as especificações definidas
+CREATE TABLE b_szortika.icf_icc_refined AS
+SELECT
+  FORMAT_TIMESTAMP('%Y-%m', t1.mes) AS ano_mes,
+  t1.icc AS icc_indice,
+  (t1.icc - LAG(t1.icc) OVER (ORDER BY t1.mes)) 
+        / LAG(t1.icc) OVER (ORDER BY t1.mes) * 100 AS icc_variacao,
+  t2.icf AS icf_indice,
+  (t2.icf - LAG(t2.icf) OVER (ORDER BY t2.mes)) 
+        / LAG(t2.icf) OVER (ORDER BY t2.mes) * 100 AS icf_variacao,
+  CURRENT_TIMESTAMP() AS load_timestamp
+FROM
+  b_szortika.icc_trusted AS t1
+JOIN
+  b_szortika.icf_trusted AS t2
+ON
+  FORMAT_TIMESTAMP('%Y-%m', t1.mes) = FORMAT_DATETIME('%Y-%m', t2.mes)
+order by ano_mes;
